@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Data and outputs are large and reproducible: do not commit rasters
+data/*
+!data/.gitkeep
+!data/reference_points.csv
+!data/reference_points.meta.json
+outputs/*
+!outputs/.gitkeep
+*.tif
+*.tiff
+*.joblib
+
+# Credentials: never commit these
+.config/earthengine/
+credentials
+*.json.key
+.env

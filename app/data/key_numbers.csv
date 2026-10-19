@@ -1,0 +1,22 @@
+metric,value
+"Water area, dry season (km2)",230.1
+"Water share of mapped area, dry (%)",37.62
+"Area with no clear image, dry (% of study area)",0.16
+"Water area, wet season (km2)",236.88
+"Water share of mapped area, wet (%)",38.69
+"Area with no clear image, wet (% of study area)",0.06
+Change dry_to_wet: stable land (km2),370.64
+Change dry_to_wet: stable water (km2),226.27
+Change dry_to_wet: water gain (land -> water) (km2),10.56
+Change dry_to_wet: water loss (water -> land) (km2),3.8
+Change dry_to_wet: Area compared (km2),611.27
+"Agreement with JRC labels, unseen areas (overall)",0.9852
+"Kappa, unseen areas",0.9704
+"Water F1, unseen areas",0.9855
+"Water IoU, unseen areas",0.9714
+Tree depth chosen,2
+Tree leaves,4
+Baseline NDWI>0: overall agreement,0.9734
+Baseline MNDWI>0: overall agreement,0.9839
+Baseline NDWI Otsu: overall agreement,0.977
+Baseline MNDWI Otsu: overall agreement,0.9879

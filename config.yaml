@@ -1,0 +1,50 @@
+# ---------------------------------------------------------------------------
+# waterdet configuration. The notebook sets gee.project for you; nothing else here needs changing.
+# ---------------------------------------------------------------------------
+
+gee:
+  project: "YOUR-GCP-PROJECT-ID"      # set by the notebook from the one box you fill in
+  drive_folder: "waterdet"            # Drive folder that receives the exported GeoTIFFs
+
+aoi:
+  name: "lagos_lagoon"
+  # [lon_min, lat_min, lon_max, lat_max] in degrees (EPSG:4326).
+  # The box from your proposal: Lagos lagoon, creeks, Atlantic shoreline and city.
+  bbox: [3.30, 6.40, 3.55, 6.60]
+
+imagery:
+  scale_m: 10                         # Sentinel-2 native resolution for B2/B3/B4/B8 (B11 is 20 m, resampled)
+  cloud_score_threshold: 0.60         # Cloud Score+ cs_cdf; Google suggests 0.50-0.65 (higher = stricter)
+  max_scene_cloud_pct: 60             # drop whole scenes that are mostly cloud (cheap pre-filter)
+  min_valid_obs: 3                    # a pixel needs >= this many clear observations to be used
+
+# End dates are EXCLUSIVE. Dry season follows the proposal; wet season shows seasonal change.
+periods:
+  dry: {start: "2025-12-01", end: "2026-03-01"}   # Dec 2025 - Feb 2026
+  wet: {start: "2026-06-01", end: "2026-10-01"}   # Jun - Sep 2026
+training_period: dry                  # the model is trained on this period and applied to the others
+
+labels:
+  min_gsw_occurrence: 75              # % of 1984-2021 observations that were water to count as water
+  edge_buffer_px: 3                   # drop labels within 3 px (30 m) of the water/land boundary
+  dw_water_threshold: 0.5             # Dynamic World water probability used in mode gsw_dw
+  modes: [gsw, gsw_dw]                # gsw = proposal's method; gsw_dw = also requires Dynamic World agreement
+  primary_mode: gsw                   # which model draws the final maps (decide after reading the comparison)
+
+sampling:
+  n_per_class: 5000                   # training pixels per class (fewer if the AOI has fewer)
+  block_size_m: 2000                  # spatial blocks for train/test split and CV
+  test_size: 0.3
+
+model:
+  max_depth: [2, 3, 4, 5, 6, 8, 10]
+  min_samples_leaf: [1, 10, 50]
+  cv_folds: 5
+  scoring: f1                         # F1 of the water class
+
+reference:
+  csv: data/reference_points.csv      # optional: your own labelled points (see docs/OPTIONAL_ACCURACY_CHECK.md)
+  shore_px: 2                         # pixels either side of the mapped shoreline counted as 'shoreline' stratum
+  frame_n: {water_core: 80, land_core: 80, shoreline: 60}
+
+seed: 42

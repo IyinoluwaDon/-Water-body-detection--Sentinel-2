@@ -1,0 +1,21 @@
+{
+  "periods": [
+    "dry",
+    "wet"
+  ],
+  "period_labels": {
+    "dry": "Dry season (2025-12-01 to 2026-03-01)",
+    "wet": "Wet season (2026-05-01 to 2026-10-17)"
+  },
+  "bbox": [
+    3.3,
+    6.4,
+    3.55,
+    6.6
+  ],
+  "aoi_name": "lagos_lagoon",
+  "pixel_size_m": 20,
+  "primary_mode": "gsw",
+  "training_period": "dry",
+  "has_change": true
+}
