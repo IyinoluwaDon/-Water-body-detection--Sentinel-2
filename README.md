@@ -4,9 +4,8 @@ Maps surface water across the Lagos lagoon area from Sentinel-2 satellite imager
 can be read and explained. It then measures how good the map is, compares the learned model against simple
 threshold rules, and maps how water changes between the dry and wet seasons.
 
-SIWES Project 1 of 3, Interspatial Technologies. Author: Iyinoluwa Don-Taiwo.
 
-**Live app:** `<paste your Streamlit link here>`  |  **Executed notebook:** `notebooks/waterdet_colab_run_oct2026.ipynb`
+**Live app:** `https://water-body-detection.streamlit.app/`  |  **Executed notebook:** `notebooks/waterdet_colab_run_oct2026.ipynb`
 
 ---
 
@@ -83,7 +82,7 @@ Held-out 2 km blocks the model never trained on. Two label modes were trained an
 | **Decision Tree** (depth 2, chosen by spatial CV and the one-standard-error rule) | 0.9878 | 0.9980 |
 | MNDWI with Otsu threshold (no training) | 0.9888 | 0.9970 |
 
-**How to read this honestly.**
+**How to read this.**
 - The tree **ties** the best single threshold (MNDWI + Otsu). It does not clearly beat it. That is a valid finding:
   water is easy to separate in this scene, so a tuned threshold is nearly as good as a learned model.
 - The tree's value is that it is **interpretable**: its rules are only a few lines (it uses B11, MNDWI and B4) that can be
@@ -101,7 +100,7 @@ unless that section exists in `results/summary.md`.
 
 ---
 
-## 3. Key ideas in plain language
+## 3. Key ideas
 
 | Term | Meaning |
 |---|---|
@@ -394,11 +393,3 @@ hashes of the input rasters.
 - Accuracy assessment: Olofsson et al. 2014, *Remote Sens. Environ.* 148:42-57
 
 Licence: MIT. See `LICENSE`.
-
-### SIWES portfolio
-
-| # | Project | Status |
-|---|---|---|
-| 1 | Water body detection: Sentinel-2, NDWI/MNDWI, Decision Tree (this repo) | Built and run |
-| 2 | Building footprint extraction: U-Net on SpaceNet | Planned |
-| 3 | Wildfire risk prediction: fused vegetation, thermal and weather data | Planned |
