@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 
 gee:
-  project: "YOUR-GCP-PROJECT-ID"      # set by the notebook from the one box you fill in
+  project: "deforestationanalysis-507215"      # set by the notebook from the one box you fill in
   drive_folder: "waterdet"            # Drive folder that receives the exported GeoTIFFs
 
 aoi:
