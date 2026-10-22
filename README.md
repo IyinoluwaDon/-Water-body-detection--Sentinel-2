@@ -9,6 +9,7 @@ The implementation covers the proposal's core workflow. Independent manual spot-
 | What you want | Where to go |
 |---|---|
 | Understand the method | [Methodology](docs/METHODOLOGY.md) |
+| Get the full project explanation for reports or slides | [Complete project overview](docs/PROJECT_OVERVIEW.md) |
 | See the recorded Lagos results | [Result summary](results/presentation/summary.md) and [slide images](results/presentation/) |
 | Run without a Google account | Offline demonstration below |
 | Run on real imagery | [Run guide](docs/HOW_TO_RUN.md) |
