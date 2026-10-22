@@ -1,0 +1,28 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Projects\water-body-detection
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1
+collected 61 items
+
+tests\test_basics.py ...........                                         [ 18%]
+tests\test_evaluate_reference.py ...........                             [ 36%]
+tests\test_gee_export.py ...                                             [ 40%]
+tests\test_gee_graph_offline.py ....                                     [ 47%]
+tests\test_io_integrity.py ...                                           [ 52%]
+tests\test_labels_sampling_model.py .........                            [ 67%]
+tests\test_pipeline_e2e.py .....                                         [ 75%]
+tests\test_presentation_app.py .....                                     [ 83%]
+tests\test_review_regressions.py ..........                              [100%]
+
+============================== warnings summary ===============================
+tests/test_evaluate_reference.py: 4 warnings
+tests/test_pipeline_e2e.py: 8 warnings
+tests/test_presentation_app.py: 8 warnings
+  C:\Projects\water-body-detection\.venv\Lib\site-packages\rasterio\transform.py:178: PendingDeprecationWarning: Use `@` matmul instead of `*` mul operator for matrix multiplication
+    return Affine.translation(west, north) * Affine.scale(xsize, -ysize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: C:\Projects\water-body-detection\results\review\pytest.xml -
+================= 61 passed, 20 warnings in 289.55s (0:04:49) =================

@@ -28,7 +28,7 @@ def metrics_from_matrix(m: np.ndarray) -> dict:
         "kappa": kappa,
         "water_precision": prec,          # user's accuracy of water
         "water_recall": rec,              # producer's accuracy of water
-        "water_f1": _div(2 * prec * rec, prec + rec) if np.isfinite(prec) and np.isfinite(rec) else float("nan"),
+        "water_f1": _div(2 * tp, 2 * tp + fp + fn),
         "water_iou": _div(tp, tp + fp + fn),
         "land_precision": _div(tn, tn + fn),
         "land_recall": _div(tn, tn + fp),

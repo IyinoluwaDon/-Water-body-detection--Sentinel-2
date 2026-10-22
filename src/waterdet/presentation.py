@@ -85,7 +85,8 @@ def _save_fig(fig, path: Path) -> None:
 
 def _title_for(period: str, cfg: dict) -> str:
     p = cfg["periods"][period]
-    return f"{period.capitalize()} season ({p['start']} to {p['end']})"
+    prefix = "SYNTHETIC DEMO | " if cfg['aoi'].get('name') == 'synthetic' else ""
+    return f"{prefix}{period.capitalize()} ({p['start']} to {p['end']}, end exclusive)"
 
 
 def build_presentation_pack(cfg: dict, data_dir="data", out_dir="outputs", max_px: int = 1400) -> dict:
@@ -95,14 +96,13 @@ def build_presentation_pack(cfg: dict, data_dir="data", out_dir="outputs", max_p
     primary = summary["primary_mode"]
     tp = summary["training_period"]
     pres, app = out_dir / "presentation", out_dir / "streamlit_data"
-    for d in (pres, app):
-        if d.exists():
-            shutil.rmtree(d)
-        d.mkdir(parents=True)
-
-    periods = [p for p in cfg["periods"] if (data_dir / f"s2_{p}.tif").exists() and (out_dir / "maps" / f"water_{p}.tif").exists()]
+    periods = [p for p in sorted(cfg['periods'], key=lambda p: str(cfg['periods'][p]['start']))
+               if p in summary['areas'] and (data_dir / f"s2_{p}.tif").exists()
+               and (out_dir / "maps" / f"water_{p}.tif").exists()]
     if not periods:
         raise FileNotFoundError("No season has both data/s2_<season>.tif and outputs/maps/water_<season>.tif. Run Step 6 first.")
+    for d in (pres, app):
+        d.mkdir(parents=True, exist_ok=True)
 
     shape = read_stack(data_dir / f"s2_{tp}.tif").shape
     step = _step(shape, max_px)
@@ -160,13 +160,14 @@ def build_presentation_pack(cfg: dict, data_dir="data", out_dir="outputs", max_p
             _save_fig(fig, pres / f"04_model_inputs_{p}.png")
 
     # change map
-    change_files = sorted((out_dir / "maps").glob("change_*.tif"))
+    change_files = [out_dir / 'maps' / f'change_{key}.tif' for key in summary.get('change', {})
+                    if (out_dir / 'maps' / f'change_{key}.tif').exists()]
     if change_files:
         ch = _read_class_map(change_files[0], step)
         pal = {k: v for k, v in CHANGE_RGB.items()}
         img = _colourise(ch, pal)
         fig, ax = plt.subplots(figsize=(9, 7.2)); ax.imshow(img); ax.axis("off")
-        ax.set_title("Where water appeared or disappeared (dry to wet season)", fontsize=12)
+        ax.set_title(f"Water change: {next(iter(summary['change']))}", fontsize=12)
         ax.legend(handles=[Patch(color=np.array(CHANGE_RGB[k]) / 255, label=CHANGE_LABEL[k], ec="#999") for k in (0, 1, 2, 3)],
                   loc="lower left", framealpha=0.95)
         _save_fig(fig, pres / "05_change_map.png")
@@ -218,8 +219,31 @@ def build_presentation_pack(cfg: dict, data_dir="data", out_dir="outputs", max_p
 
     # model figures
     mdir = out_dir / f"mode_{primary}"
+    # Put the model and simple alternatives on one plot with uncertainty resampled by whole held-out blocks.
+    comparison = [("Decision Tree", m["test_spatial_holdout"])] + list(m["baselines_on_same_test_points"].items())
+    comparison.sort(key=lambda item: item[1]["overall_accuracy"])
+    fig, ax = plt.subplots(figsize=(9, 4.8))
+    for i, (name, metrics) in enumerate(comparison):
+        score = metrics["overall_accuracy"] * 100
+        ci = metrics.get("ci95_block_bootstrap", {}).get("overall_accuracy", [None, None])
+        error = None if any(x is None for x in ci) else [[max(0, score-ci[0]*100)], [max(0, ci[1]*100-score)]]
+        tree_colour = tuple(channel / 255 for channel in WATER_RGB)
+        ax.barh(i, score, color=tree_colour if name == "Decision Tree" else "#79a9d1")
+        if error:
+            ax.errorbar(score, i, xerr=error, fmt="none", ecolor="#222", capsize=3)
+        ax.text(score + 0.04, i + 0.2, f"{score:.2f}%", va="bottom", fontsize=9,
+                bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.8, "pad": 1})
+    ax.set_yticks(range(len(comparison)), [x[0] for x in comparison])
+    ax.set_xlim(min(95, comparison[0][1]["overall_accuracy"]*100 - .8), 100)
+    ax.set_xlabel("Agreement with historical labels on held-out spatial blocks (%)")
+    ax.set_title("Decision Tree and index thresholds, with block-bootstrap 95% intervals")
+    ax.grid(axis="x", alpha=.25); fig.tight_layout()
+    _save_fig(fig, pres / "12_threshold_comparison.png")
+    shutil.copy(pres / "12_threshold_comparison.png", app / "threshold_comparison.png")
+
     for src, dst in (("tree.png", "08_decision_tree.png"), ("cv_depth_curve.png", "09_depth_choice.png"),
                      ("confusion_test.png", "10_confusion_matrix.png"), ("feature_importance.png", "11_feature_importance.png"),
+                     ("spatial_validation.png", "13_spatial_validation.png"),
                      ("tree_rules.txt", "08_decision_tree_rules.txt")):
         if (mdir / src).exists():
             shutil.copy(mdir / src, pres / dst)
@@ -238,8 +262,9 @@ def build_presentation_pack(cfg: dict, data_dir="data", out_dir="outputs", max_p
         "3. `03_before_after_*.png`  The detection: image next to the water the model found.\n"
         "4. `06_dry_wet_change.png` and `05_change_map.png`  The monitoring result: seasonal change.\n"
         "5. `08_decision_tree.png` with `08_decision_tree_rules.txt`  How the model decides, in plain rules.\n"
-        "6. `09_depth_choice.png`, `10_confusion_matrix.png`  Why this tree size, and where it errs.\n"
-        "7. `07_key_numbers.png`  The numbers on one slide.\n\n"
+        "6. `09_depth_choice.png`, `10_confusion_matrix.png`, `13_spatial_validation.png`  How it was tested and where it disagrees.\n"
+        "7. `12_threshold_comparison.png`  Compare the tree with simple index thresholds and show block-bootstrap intervals.\n"
+        "8. `07_key_numbers.png`  The main quantities on one slide.\n\n"
         "## One sentence to say out loud about accuracy\n"
         "\"These scores measure agreement with the JRC Global Surface Water map on areas the model never saw; "
         "they are not proof against ground truth, which needs independent reference points.\"\n", encoding="utf-8")

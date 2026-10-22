@@ -86,7 +86,7 @@
           "kappa": 0.9467730891352176,
           "water_precision": 0.967067764407853,
           "water_recall": 0.9813624678663239,
-          "water_f1": 0.9741626794258372,
+          "water_f1": 0.9741626794258373,
           "water_iou": 0.9496268656716418,
           "land_precision": 0.9802317655078391,
           "land_recall": 0.9651006711409396,
@@ -100,7 +100,25 @@
               1527
             ]
           ],
-          "n": 3046
+          "n": 3046,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9512845497678175,
+              0.9905582509584451
+            ],
+            "kappa": [
+              0.8992728807921524,
+              0.9806092045503852
+            ],
+            "water_f1": [
+              0.9443200589448824,
+              0.9914316042995406
+            ],
+            "water_iou": [
+              0.8945139548798086,
+              0.9830088374677618
+            ]
+          }
         },
         "MNDWI>0": {
           "overall_accuracy": 0.9839133289560079,
@@ -121,7 +139,25 @@
               1526
             ]
           ],
-          "n": 3046
+          "n": 3046,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9646064460897797,
+              0.9958396036668385
+            ],
+            "kappa": [
+              0.9277918819331175,
+              0.9915582762093412
+            ],
+            "water_f1": [
+              0.963574597139236,
+              0.9961946323593118
+            ],
+            "water_iou": [
+              0.9297095637778888,
+              0.9924181190715988
+            ]
+          }
         },
         "NDWI Otsu": {
           "overall_accuracy": 0.9770190413657256,
@@ -142,7 +178,25 @@
               1526
             ]
           ],
-          "n": 3046
+          "n": 3046,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9569904795629876,
+              0.9922459084784943
+            ],
+            "kappa": [
+              0.9126927582770911,
+              0.9841535333426252
+            ],
+            "water_f1": [
+              0.9520675024811882,
+              0.992745318591513
+            ],
+            "water_iou": [
+              0.9085200711919829,
+              0.9855951592843629
+            ]
+          }
         },
         "MNDWI Otsu": {
           "overall_accuracy": 0.9878529218647406,
@@ -163,7 +217,25 @@
               1522
             ]
           ],
-          "n": 3046
+          "n": 3046,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9701830407066954,
+              0.997959649237243
+            ],
+            "kappa": [
+              0.9393200618418752,
+              0.9957846938543344
+            ],
+            "water_f1": [
+              0.9684911872161527,
+              0.9978557137702789
+            ],
+            "water_iou": [
+              0.9389075079564569,
+              0.9957206042928155
+            ]
+          }
         }
       },
       "baseline_thresholds": {
@@ -250,7 +322,7 @@
         "kappa": 0.9920684881418306,
         "water_precision": 0.9940278699402787,
         "water_recall": 0.9980013324450366,
-        "water_f1": 0.9960106382978724,
+        "water_f1": 0.9960106382978723,
         "water_iou": 0.9920529801324504,
         "land_precision": 0.9980250164581962,
         "land_recall": 0.9940983606557378,
@@ -290,7 +362,7 @@
           "kappa": 0.9629955893265106,
           "water_precision": 0.9646302250803859,
           "water_recall": 0.9993337774816788,
-          "water_f1": 0.9816753926701571,
+          "water_f1": 0.981675392670157,
           "water_iou": 0.9640102827763496,
           "land_precision": 0.9993201903467029,
           "land_recall": 0.9639344262295082,
@@ -304,7 +376,25 @@
               1500
             ]
           ],
-          "n": 3026
+          "n": 3026,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9676190981789237,
+              0.9922584143173854
+            ],
+            "kappa": [
+              0.9329549081747616,
+              0.9844221026198257
+            ],
+            "water_f1": [
+              0.9643268653034147,
+              0.9931311255576697
+            ],
+            "water_iou": [
+              0.9311112101582774,
+              0.9863559731752963
+            ]
+          }
         },
         "MNDWI>0": {
           "overall_accuracy": 0.9937210839391937,
@@ -325,14 +415,32 @@
               1500
             ]
           ],
-          "n": 3026
+          "n": 3026,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.988607781573772,
+              0.9977212840962013
+            ],
+            "kappa": [
+              0.9762623279142574,
+              0.995183078368907
+            ],
+            "water_f1": [
+              0.9861134098327641,
+              0.9980288791546462
+            ],
+            "water_iou": [
+              0.9726072303921569,
+              0.9960655427050336
+            ]
+          }
         },
         "NDWI Otsu": {
           "overall_accuracy": 0.9874421678783873,
           "kappa": 0.9748874951571487,
           "water_precision": 0.9759271307742355,
           "water_recall": 0.9993337774816788,
-          "water_f1": 0.9874917709019091,
+          "water_f1": 0.9874917709019092,
           "water_iou": 0.9752925877763329,
           "land_precision": 0.9993284083277367,
           "land_recall": 0.9757377049180328,
@@ -346,7 +454,25 @@
               1500
             ]
           ],
-          "n": 3026
+          "n": 3026,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9776117062875898,
+              0.9958488549800607
+            ],
+            "kappa": [
+              0.9536960359250399,
+              0.9914731994324957
+            ],
+            "water_f1": [
+              0.9746537772801606,
+              0.995995637783569
+            ],
+            "water_iou": [
+              0.9505606588533417,
+              0.9920232205715477
+            ]
+          }
         },
         "MNDWI Otsu": {
           "overall_accuracy": 0.9966953073364178,
@@ -367,7 +493,25 @@
               1500
             ]
           ],
-          "n": 3026
+          "n": 3026,
+          "ci95_block_bootstrap": {
+            "overall_accuracy": [
+              0.9936698425452732,
+              0.9989100767361773
+            ],
+            "kappa": [
+              0.9869521152347677,
+              0.9977734423694953
+            ],
+            "water_f1": [
+              0.9926101168740735,
+              0.9990702423296288
+            ],
+            "water_iou": [
+              0.9853286544925957,
+              0.9981422119534323
+            ]
+          }
         }
       },
       "baseline_thresholds": {
@@ -438,18 +582,18 @@
   },
   "reference_validation": null,
   "notes": [
-    "No independent reference points found at data/reference_points.csv. Accuracy above is agreement with JRC-derived labels only. Optional: docs/OPTIONAL_ACCURACY_CHECK.md explains how to get a true accuracy figure."
+    "No independent reference points found at data\\reference_points.csv. Accuracy above is agreement with JRC-derived labels only. Optional: docs/OPTIONAL_ACCURACY_CHECK.md explains how to get a true accuracy figure."
   ],
   "provenance": {
-    "python": "3.13.16",
+    "python": "3.11.9",
     "packages": {
       "waterdet": "0.1.0",
-      "numpy": "2.1.3",
-      "scipy": "1.16.3",
-      "pandas": "2.2.3",
-      "scikit-learn": "1.6.1",
-      "rasterio": "1.5.2",
-      "earthengine-api": "1.7.39"
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1",
+      "rasterio": "1.4.4",
+      "earthengine-api": "1.7.49"
     },
     "inputs_sha256": {
       "dry": "1779b694527fe1f9d9ea07730bfb50a662fe24986ae29eeeb52014ff429448e0",

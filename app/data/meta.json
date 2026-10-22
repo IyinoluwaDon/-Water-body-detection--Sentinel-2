@@ -4,8 +4,8 @@
     "wet"
   ],
   "period_labels": {
-    "dry": "Dry season (2025-12-01 to 2026-03-01)",
-    "wet": "Wet season (2026-05-01 to 2026-10-17)"
+    "dry": "Dry (2025-12-01 to 2026-03-01, end exclusive)",
+    "wet": "Wet (2026-05-01 to 2026-10-17, end exclusive)"
   },
   "bbox": [
     3.3,

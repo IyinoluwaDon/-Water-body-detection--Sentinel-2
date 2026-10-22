@@ -38,7 +38,10 @@ class Stack:
 
     @property
     def pixel_area_km2(self) -> float:
-        return abs(self.transform.a * self.transform.e) / 1e6
+        if not self.crs.is_projected:
+            raise ValueError("Area requires a projected CRS; reproject the raster to UTM first")
+        _, factor = self.crs.linear_units_factor
+        return abs(self.transform.a * self.transform.e - self.transform.b * self.transform.d) * factor**2 / 1e6
 
     def valid_mask(self, min_obs: int) -> np.ndarray:
         """True where all spectral bands are finite and at least min_obs clear observations exist."""
@@ -46,6 +49,8 @@ class Stack:
             ok = np.isfinite(self.bands["n_obs"]) & (self.bands["n_obs"] >= min_obs)
             for name in SPECTRAL_BANDS:
                 ok &= np.isfinite(self.bands[name])
+            for other in ("B8", "B11"):
+                ok &= np.abs(self.bands["B3"] + self.bands[other]) > 1e-9
             self._valid_cache[min_obs] = ok
         return self._valid_cache[min_obs]
 
@@ -108,7 +113,7 @@ def read_stack(path: str | Path) -> Stack:
         raise FileNotFoundError(f"{path} not found. Export it from Earth Engine first (see README).")
     with rasterio.open(path) as src:
         names = _band_names(src)
-        data = src.read().astype(np.float32)
+        data = src.read(masked=True).astype(np.float32).filled(np.nan)
         nodata = src.nodata
         transform, crs = src.transform, src.crs
     if crs is None:

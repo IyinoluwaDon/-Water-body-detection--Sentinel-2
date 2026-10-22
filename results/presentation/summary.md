@@ -14,7 +14,7 @@
 | NDWI Otsu (thr 0.012) | 0.9770 | 0.9540 | 0.9776 | 0.9561 |
 | MNDWI Otsu (thr 0.066) | 0.9879 | 0.9757 | 0.9880 | 0.9763 |
 
-_These scores measure agreement with JRC-derived labels on held-out spatial blocks, using a class-balanced 50:50 sample. They are NOT independent truth, and water precision / F1 / IoU change with the class ratio. Use the area-weighted reference validation below for headline numbers._
+_These scores measure agreement with JRC-derived labels on held-out spatial blocks, using an approximately equal per-class sample (the block split can shift the ratio). They are NOT independent truth, and water precision / F1 / IoU change with the class ratio. Independent, area-weighted reference validation is still needed for ground-truth accuracy._
 
 ## Label mode `gsw_dw` (training period `dry`)
 
@@ -30,7 +30,7 @@ _These scores measure agreement with JRC-derived labels on held-out spatial bloc
 | NDWI Otsu (thr 0.012) | 0.9874 | 0.9749 | 0.9875 | 0.9753 |
 | MNDWI Otsu (thr 0.066) | 0.9967 | 0.9934 | 0.9967 | 0.9934 |
 
-_These scores measure agreement with JRC-derived labels on held-out spatial blocks, using a class-balanced 50:50 sample. They are NOT independent truth, and water precision / F1 / IoU change with the class ratio. Use the area-weighted reference validation below for headline numbers._
+_These scores measure agreement with JRC-derived labels on held-out spatial blocks, using an approximately equal per-class sample (the block split can shift the ratio). They are NOT independent truth, and water precision / F1 / IoU change with the class ratio. Independent, area-weighted reference validation is still needed for ground-truth accuracy._
 
 ## Water extent (primary model)
 

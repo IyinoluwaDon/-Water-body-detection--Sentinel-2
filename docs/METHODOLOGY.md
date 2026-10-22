@@ -60,7 +60,7 @@ The labels come from JRC Global Surface Water v1.4 (GSW), not from hand digitisi
 ## 5. Model and tuning
 
 - `sklearn.tree.DecisionTreeClassifier`, Gini criterion, `class_weight="balanced"`. A tree was chosen because its
-  rules can be printed (`tree_rules.txt`) and argued about, which a Random Forest would not allow.
+  rules can be printed (`tree_rules.txt`) and argued about, more compactly than a full ensemble. Random Forests also support interpretation methods.
 - Grid: `max_depth` in {2,3,4,5,6,8,10} x `min_samples_leaf` in {1,10,50}, scored by F1 of the water class, with
   5-fold `GroupKFold` over the spatial blocks.
 - **One-standard-error rule:** among all settings whose CV score is within one standard error of the best, take the
@@ -80,15 +80,13 @@ Confusion-matrix convention: rows = reference, columns = predicted, order [land,
 "user's accuracy"; water recall is the "producer's accuracy"; IoU = TP / (TP + FP + FN).
 
 1. **Spatial hold-out against JRC-derived labels.** Reported with 95% CIs from resampling whole blocks (500 draws).
-   This is *agreement with the labels* on unseen blocks. It cannot exceed the quality of the labels, it uses a 50:50
-   class sample (so precision, F1 and IoU depend on that ratio), and it never tests the ambiguous pixels that were
+   This is *agreement with the labels* on unseen blocks. It cannot exceed the quality of the labels, it starts with up to equal numbers per class (the spatial split may change the ratio) (so precision, F1 and IoU depend on that ratio), and it never tests the ambiguous pixels that were
    deliberately left out of the labels.
 2. **Independent reference points (your labels).** ~220 pixels drawn at random in three strata of the primary map:
    water core, land core and shoreline (within 2 px of the mapped edge). The strata have very different areas, so
    unweighted accuracy would be badly biased. The estimator is `p[i,j] = sum_h W_h * n_h(ref=i, pred=j) / n_h`, with
    `W_h` the stratum's share of mapped pixels (Olofsson et al. 2014). CIs come from resampling points within each
-   stratum (500 draws). The strata are *frozen* in `data/reference_points.meta.json` so later runs score the same frame. **This is the
-   figure to quote.** Its weakness is that you judged the points from imagery of a different date than the composite.
+   stratum (500 draws). The strata are *frozen* in `data/reference_points.meta.json` so later runs score the same frame. **Report this only after independent labels are supplied.** Check imagery dates: a different date can introduce label error.
 3. **Temporal transfer.** The same test points are scored on the other season's composite. The labels are static, so
    this only tests whether the model still works on permanent water and land under different conditions.
 

@@ -35,6 +35,7 @@ def test_pipeline_outputs_and_scores(first_run, dry_bands):
     assert any("No independent reference" in n for n in s["notes"])
     # DT must beat or match the best fixed threshold; MNDWI>0 is fooled by the shadow patch
     base = clean["baselines_on_same_test_points"]
+    assert all(len(x["ci95_block_bootstrap"]["overall_accuracy"]) == 2 for x in base.values())
     assert clean["test_spatial_holdout"]["kappa"] >= max(b["kappa"] for b in base.values()) - 0.01
     assert noisy["test_spatial_holdout"]["overall_accuracy"] < clean["test_spatial_holdout"]["overall_accuracy"]
     assert "wet" in clean["temporal_transfer"] and clean["temporal_transfer"]["wet"]["overall_accuracy"] > 0.95
@@ -97,7 +98,6 @@ def test_independent_reference_validation_is_close_to_truth(tmp_path, first_run,
     ref = s2["reference_validation"]
     assert ref["area_weighted"] and ref["n_unsure"] == 1
     m = ref["methods"]
-    true_oa = (np.load if False else (lambda: None))  # placeholder to keep flake quiet
     dry_map = rasterio.open(tmp_path / "out2/maps/water_dry.tif").read(1)
     ok = dry_map != 255
     true_oa = (dry_map[ok] == dry_bands["_truth"][ok]).mean()

@@ -1,0 +1,13 @@
+{
+  "data_kind": "synthetic; not measured Lagos accuracy",
+  "periods": {
+    "dry": {
+      "known_truth_agreement": 0.99868,
+      "valid_pixels": 200000
+    },
+    "wet": {
+      "known_truth_agreement": 0.9985012658227848,
+      "valid_pixels": 197500
+    }
+  }
+}

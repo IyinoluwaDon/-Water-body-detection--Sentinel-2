@@ -92,12 +92,18 @@ def _train_one_mode(cfg: dict, stacks: dict, mode: str, out_dir: Path, notes: li
                                            leaves=M["min_samples_leaf"], cv_folds=M["cv_folds"],
                                            scoring=M.get("scoring", "f1"), seed=cfg["seed"])
     pred_te = model.predict(X[te])
+    from .diagnostics import save_holdout
+    save_holdout(ps, tr, te, pred_te, st.shape, mode_dir)
     test = binary_metrics(ps.y[te], pred_te)
     test["ci95_block_bootstrap"] = block_bootstrap_ci(ps.y[te], pred_te, ps.block[te], seed=cfg["seed"])
     train = binary_metrics(ps.y[tr], model.predict(X[tr]))
 
     thresholds = _baseline_thresholds(st, min_obs)
     baselines = {name: binary_metrics(ps.y[te], p) for name, p in _baseline_predictions(X[te], thresholds).items()}
+    for name, metrics in baselines.items():
+        metrics["ci95_block_bootstrap"] = block_bootstrap_ci(
+            ps.y[te], _baseline_predictions(X[te], {name: thresholds[name]})[name], ps.block[te], seed=cfg["seed"]
+        )
     baselines_thr = {name: thr for name, (_, thr) in thresholds.items()}
 
     transfer = {}
@@ -256,8 +262,9 @@ def _write_summary(path: Path, summary: dict) -> None:
             L.append(f"| {name} (thr {_f(r['baseline_thresholds'][name], 3)}) | {_f(b['overall_accuracy'])} | "
                      f"{_f(b['kappa'])} | {_f(b['water_f1'])} | {_f(b['water_iou'])} |")
         L += ["", "_These scores measure agreement with JRC-derived labels on held-out spatial blocks, using a "
-                  "class-balanced 50:50 sample. They are NOT independent truth, and water precision / F1 / IoU change "
-                  "with the class ratio. Use the area-weighted reference validation below for headline numbers._", ""]
+                  "approximately equal per-class sample (the block split can shift the ratio). They are NOT independent truth, "
+                  "and water precision / F1 / IoU change "
+                  "with the class ratio. Independent, area-weighted reference validation is still needed for ground-truth accuracy._", ""]
     ref = summary.get("reference_validation")
     if ref:
         L += ["## Independent reference validation", "",
@@ -301,6 +308,12 @@ def run(cfg: dict, data_dir: Path, out_dir: Path) -> dict:
         else:
             notes.append(f"Period {p!r} skipped: {f.name} not found.")
     ref_stack = stacks[tp]
+    _ = ref_stack.pixel_area_km2  # reject angular grids before training or writing area statistics
+    resolution = (abs(ref_stack.transform.a), abs(ref_stack.transform.e))
+    if (ref_stack.transform.b != 0 or ref_stack.transform.d != 0
+            or not np.allclose(resolution, cfg['imagery']['scale_m'])
+            or ref_stack.crs.linear_units_factor[1] != 1):
+        raise ValueError("Input grid must be north-up with metre pixels matching imagery.scale_m")
     for p, s in stacks.items():
         if s.shape != ref_stack.shape or s.transform != ref_stack.transform or s.crs != ref_stack.crs:
             raise ValueError(f"s2_{p}.tif is not on the same grid as s2_{tp}.tif. Re-export both with the same AOI/scale/CRS.")
@@ -352,9 +365,21 @@ def main(argv=None) -> None:
     ap.add_argument("--config", default="config.yaml")
     ap.add_argument("--data-dir", default="data")
     ap.add_argument("--out-dir", default="outputs")
+    ap.add_argument("--presentation", action="store_true", help="Also build slide figures and app data")
     args = ap.parse_args(argv)
-    logging.basicConfig(level=logging.INFO, format="%(message)s")
-    summary = run(load_config(args.config), Path(args.data_dir), Path(args.out_dir))
+    Path(args.out_dir).mkdir(parents=True, exist_ok=True)
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s",
+                        handlers=[logging.StreamHandler(), logging.FileHandler(Path(args.out_dir) / 'run.log', encoding='utf-8')])
+    cfg = load_config(args.config)
+    try:
+        summary = run(cfg, Path(args.data_dir), Path(args.out_dir))
+        if args.presentation:
+            from .presentation import build_presentation_pack
+            build_presentation_pack(cfg, args.data_dir, args.out_dir)
+    except Exception:
+        log.exception("Pipeline failed")
+        raise
+    log.info("Run complete: %s", Path(args.out_dir) / 'summary.json')
     print(f"Done. See {Path(args.out_dir) / 'summary.md'}")
     for n in summary["notes"]:
         print("NOTE:", n)

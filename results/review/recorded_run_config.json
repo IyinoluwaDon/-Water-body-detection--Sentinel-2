@@ -1,0 +1,75 @@
+{
+  "gee": {
+    "project": "<redacted>",
+    "drive_folder": "waterdet"
+  },
+  "aoi": {
+    "name": "lagos_lagoon",
+    "bbox": [
+      3.3,
+      6.4,
+      3.55,
+      6.6
+    ]
+  },
+  "imagery": {
+    "scale_m": 10,
+    "cloud_score_threshold": 0.6,
+    "max_scene_cloud_pct": 90,
+    "min_valid_obs": 2
+  },
+  "periods": {
+    "dry": {
+      "start": "2025-12-01",
+      "end": "2026-03-01"
+    },
+    "wet": {
+      "start": "2026-05-01",
+      "end": "2026-10-17"
+    }
+  },
+  "training_period": "dry",
+  "labels": {
+    "min_gsw_occurrence": 75,
+    "edge_buffer_px": 3,
+    "dw_water_threshold": 0.5,
+    "modes": [
+      "gsw",
+      "gsw_dw"
+    ],
+    "primary_mode": "gsw"
+  },
+  "sampling": {
+    "n_per_class": 5000,
+    "block_size_m": 2000,
+    "test_size": 0.3
+  },
+  "model": {
+    "max_depth": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10
+    ],
+    "min_samples_leaf": [
+      1,
+      10,
+      50
+    ],
+    "cv_folds": 5,
+    "scoring": "f1"
+  },
+  "reference": {
+    "csv": "data/reference_points.csv",
+    "shore_px": 2,
+    "frame_n": {
+      "water_core": 80,
+      "land_core": 80,
+      "shoreline": 60
+    }
+  },
+  "seed": 42
+}

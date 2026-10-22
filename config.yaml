@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 
 gee:
-  project: "deforestationanalysis-507215"      # set by the notebook from the one box you fill in
+  project: "YOUR-GCP-PROJECT-ID"      # set by the notebook from the one box you fill in
   drive_folder: "waterdet"            # Drive folder that receives the exported GeoTIFFs
 
 aoi:
@@ -18,7 +18,7 @@ imagery:
   max_scene_cloud_pct: 60             # drop whole scenes that are mostly cloud (cheap pre-filter)
   min_valid_obs: 3                    # a pixel needs >= this many clear observations to be used
 
-# End dates are EXCLUSIVE. Dry season follows the proposal; wet season shows seasonal change.
+# End dates are EXCLUSIVE. Dry season adapts the proposal; wet season shows seasonal change.
 periods:
   dry: {start: "2025-12-01", end: "2026-03-01"}   # Dec 2025 - Feb 2026
   wet: {start: "2026-06-01", end: "2026-10-01"}   # Jun - Sep 2026

@@ -69,8 +69,8 @@ with tabs[0]:
         "separate water from land, is tested on areas it never saw, and is then used to draw a map for each season.")
     first = periods[0]
     c1, c2 = st.columns(2)
-    c1.image(blend(first, 0, False), caption="What the satellite sees")
-    c2.image(blend(first, 0.7), caption="Water found by the model (blue)")
+    c1.image(blend(first, 0, False), caption="What the satellite sees", alt="True colour Sentinel-2 composite")
+    c2.image(blend(first, 0.7), caption="Water found by the model (blue)", alt="Sentinel-2 composite with detected water overlay")
 
 with tabs[1]:
     c = st.columns([1, 1, 2])
@@ -79,10 +79,10 @@ with tabs[1]:
     side = c[2].checkbox("Show satellite image and detection side by side", value=False)
     if side:
         a, b = st.columns(2)
-        a.image(blend(period, 0, False), caption="Satellite image")
-        b.image(blend(period, opacity), caption="With detected water")
+        a.image(blend(period, 0, False), caption="Satellite image", alt="True colour satellite image")
+        b.image(blend(period, opacity), caption="With detected water", alt="Satellite image with detected water overlay")
     else:
-        st.image(blend(period, opacity), caption=labels[period])
+        st.image(blend(period, opacity), caption=labels[period], alt=f"{labels[period]} with water overlay")
     a = summary["areas"][period]
     st.write(f"Water: **{f(a.get('water_km2'), 2)} km²** ({f(a.get('water_pct_of_valid'))}% of mapped area). "
              f"Grey areas ({f(a.get('nodata_pct_of_aoi'))}% of the study area) had no clear satellite image and are not classified.")
@@ -94,7 +94,8 @@ with tabs[2]:
         ch = next(iter(summary["change"].values()))
         base_p = st.radio("Background", periods, format_func=lambda p: labels[p], horizontal=True)
         over = load_image("change.png")
-        st.image(Image.alpha_composite(load_image(f"rgb_{base_p}.png"), over), caption="Green: water gained. Orange: water lost.")
+        st.image(Image.alpha_composite(load_image(f"rgb_{base_p}.png"), over), caption="Green: water gained. Orange: water lost.",
+                 alt="Seasonal change overlay showing water gain in green and loss in orange")
         df = pd.DataFrame({"km²": {k: v for k, v in ch.items() if k != "compared_km2"}})
         st.bar_chart(df.fillna(0))
         st.dataframe(df.style.format("{:.2f}", na_rep="n/a"))
@@ -106,9 +107,18 @@ with tabs[3]:
         st.code((DATA / "tree_rules.txt").read_text(encoding="utf-8"))
     c1, c2 = st.columns(2)
     if (DATA / "tree.png").exists():
-        c1.image(str(DATA / "tree.png"), caption="The decision tree")
+        c1.image(str(DATA / "tree.png"), caption="The decision tree", alt="Diagram of the fitted decision tree")
     if (DATA / "cv_depth_curve.png").exists():
-        c2.image(str(DATA / "cv_depth_curve.png"), caption="How tree size was chosen (tested on unseen areas)")
+        c2.image(str(DATA / "cv_depth_curve.png"), caption="How tree size was chosen (tested on unseen areas)",
+                 alt="Training and spatial cross-validation scores by tree depth")
+    if (DATA / "threshold_comparison.png").exists():
+        st.image(str(DATA / "threshold_comparison.png"),
+                 caption="Thresholds are evaluated on the same held-out blocks as the tree.",
+                 alt="Held-out JRC agreement and block-bootstrap intervals for the tree and four thresholds")
+    if (DATA / "spatial_validation.png").exists():
+        st.image(str(DATA / "spatial_validation.png"),
+                 caption="Red rings mark disagreements with historical labels. They are not confirmed ground errors.",
+                 alt="Spatial train and test split with held-out label and prediction locations")
     fi = pd.DataFrame({"importance": model["feature_importance"]})
     st.bar_chart(fi)
 

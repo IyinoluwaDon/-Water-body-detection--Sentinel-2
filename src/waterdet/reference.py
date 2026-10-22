@@ -39,6 +39,10 @@ def strata_from_map(map_arr: np.ndarray, shore_px: int) -> np.ndarray:
     """Integer raster: 0 water_core, 1 land_core, 2 shoreline, -1 no data."""
     valid = map_arr != MAP_NODATA
     water = map_arr == 1
+    if not isinstance(shore_px, int) or shore_px < 0:
+        raise ValueError("shore_px must be a non-negative integer")
+    if shore_px == 0:
+        return np.where(valid, np.where(water, 0, 1), -1).astype(np.int8)
     struct = np.ones((3, 3), bool)
     grown = ndimage.binary_dilation(water, structure=struct, iterations=shore_px)
     shrunk = ndimage.binary_erosion(water, structure=struct, iterations=shore_px, border_value=1)
@@ -107,6 +111,12 @@ def load_reference(csv_path: str | Path) -> tuple[pd.DataFrame, dict]:
     for col in ("id", "lon", "lat", "label"):
         if col not in df.columns:
             raise ValueError(f"{csv_path} is missing required column {col!r}")
+    if df["id"].isna().any() or df["id"].duplicated().any():
+        raise ValueError("Reference ids must be non-empty and unique")
+    for col, limit in (("lon", 180), ("lat", 90)):
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+        if (~np.isfinite(df[col]) | (df[col].abs() > limit)).any():
+            raise ValueError(f"Reference {col} must contain finite coordinates within +/-{limit}")
     lab = df["label"].fillna("").str.strip().str.lower()
     n_blank = int((lab == "").sum())
     n_unsure = int(lab.isin(["unsure", "u", "unknown", "?"]).sum())

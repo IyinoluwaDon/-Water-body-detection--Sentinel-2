@@ -50,10 +50,9 @@ def make_labels(
     if not (occurrence.shape == max_extent.shape == valid.shape):
         raise ValueError("occurrence, max_extent and valid must have the same shape")
 
-    occ = np.nan_to_num(occurrence, nan=0.0)
-    mx = np.nan_to_num(max_extent, nan=0.0)
-    water = occ >= min_occurrence
-    land = (mx == 0) & (occ == 0)
+    known = np.isfinite(occurrence) & np.isfinite(max_extent)
+    water = known & (occurrence >= min_occurrence)
+    land = known & (max_extent == 0) & (occurrence == 0)
 
     if mode == "gsw_dw":
         if dw_water is None:
@@ -66,7 +65,7 @@ def make_labels(
     water = _erode(water, edge_px)
     land = _erode(land, edge_px)
 
-    labels = np.full(occ.shape, IGNORE, dtype=np.int8)
+    labels = np.full(occurrence.shape, IGNORE, dtype=np.int8)
     labels[land & valid] = 0
     labels[water & valid] = 1  # water and land cannot overlap (occ>=min vs occ==0), order is irrelevant
     return labels
