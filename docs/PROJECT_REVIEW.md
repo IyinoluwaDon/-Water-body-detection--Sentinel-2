@@ -32,7 +32,7 @@ The proposal's example dates are 1 November 2025 to 28 February 2026 (exclusive)
 
 ## Maintainability and evidence improvements
 
-The runnable Colab notebook is the single entry point; its embedded package is refreshed from maintained source by scripts/sync_notebook.py. The executed notebook is archived, preserving its outputs and unique settings. It contains a historical recovery cell that deletes reference files and must not be run as a fresh workflow.
+The runnable Colab notebook is the single entry point; its embedded package is refreshed from maintained source by scripts/sync_notebook.py.
 
 Runtime dependency declarations are centralised in pyproject.toml; requirements.txt installs that package. An offline demo reuses the test world's generator instead of maintaining a separate fake-data implementation. CLI runs save run.log, and --presentation builds figures and app assets. New sample assignment and held-out prediction CSVs expose spatial splits and individual disagreements.
 
@@ -48,4 +48,4 @@ Seasonal median composites cannot identify a particular flood date. Differences 
 
 ## Verification record
 
-The latest full test run is recorded as `results/review/final_pytest.log` and `final_pytest.xml`. Focused app-test output is also retained. The exact input hashes match the previous run. Real-data maps, logs, per-point held-out decisions and synthetic end-to-end demonstrations are available under `outputs/real_run/` and `outputs/demo/`; the demo outputs are artificial and never stand in for Lagos observations. Synthetic maps agree with their known generated truth at 99.87% (dry) and 99.85% (wet).
+The latest full test run is recorded as `results/review/final_pytest.log` and `final_pytest.xml`, including app and presentation tests. The exact input hashes match the previous run. Real-data maps, logs, per-point held-out decisions and synthetic end-to-end demonstrations are available under `outputs/real_run/` and `outputs/demo/`; the demo outputs are artificial and never stand in for Lagos observations. Synthetic maps agree with their known generated truth at 99.87% (dry) and 99.85% (wet).

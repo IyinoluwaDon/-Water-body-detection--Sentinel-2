@@ -58,7 +58,7 @@ Set `gee.project` in `config.yaml` to your registered Earth Engine project ID. A
 .\.venv\Scripts\python -m waterdet.pipeline --config config.yaml --data-dir data --out-dir outputs/real_run --presentation
 ```
 
-Alternatively upload [the maintained Colab notebook](notebooks/waterdet_colab.ipynb) to Colab. It embeds a generated copy of the package for convenience. Maintainers must run `python scripts/sync_notebook.py` after source changes. Historical executed notebooks are kept under `notebooks/archive/`, not used as entry points.
+Alternatively upload [the Colab notebook](notebooks/waterdet_colab.ipynb) to Colab. It embeds a generated copy of the package for convenience. Maintainers must run `python scripts/sync_notebook.py` after source changes.
 
 The default configuration and the recorded run differ. To reconstruct the recorded settings, use [recorded_run_config.json](results/review/recorded_run_config.json), which the config loader also accepts, and replace its redacted project ID before exporting. Matching settings alone cannot guarantee identical imagery from a changing remote catalogue; input hashes identify the original files.
 
